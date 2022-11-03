@@ -20,7 +20,7 @@ These images can then be run on QEMU obtained from Homebrew.
 
 # Running minix
 
-1. Copy the built image back to your host machine: `docker cp minix-crosscompile-cont:/usr/src/minix_x86.iso /tmp`
+1. Copy the built image back to your host machine: `docker cp minix-crosscompile-cont:/usr/src/minix_x86.img /tmp`
 2. Run minix in Qemu: ``
 
 # Exposing a IP port to an existing container (Advice: do this at least for SSH)
