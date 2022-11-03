@@ -4,15 +4,46 @@ This is a fork of Minix that incorporates [Santurysim's fixes](https://github.co
 using the build scripts in `releasetools`. I used this Docker container to compile Minix images for i386 on an Apple silicon Macbook (AArch64).
 These images can then be run on QEMU obtained from Homebrew.
 
+# Install sw for OSX
+
+1. Install docker via  https://docs.docker.com/desktop/mac/install/
+2. Install qemu via brew 
+
 # Getting started
 
-1. Clone this repo `git clone https://github.com/lincdog/minix`
+1. Clone this repo `git clone git@gits-15.sys.kth.se:robertog/system-sec-minix.git`
 2. Change into the repo: `cd minix`
-2. Build the docker image `docker build -t minix-build -f Dockerfile.build .`
-3. Start the container `docker run -it minix-build --name minixbuild01`
-4. In the container, build Minix with `/usr/src/releasetools/x86_cdimage.sh` or another of the build scripts. This takes about 30-45 minutes because it has to compile the entire LLVM/Clang toolchain targeting x86.
-5. Copy the built image back to your host machine: `docker cp minixbuild01:/usr/src/minix_x86.iso .`
-6. (optional) Commit your docker container as a new image so that you don't need to recompile the toolchain each time while you develop: `docker commit minixbuild01 minix-build:withtools` (make take a bit, the compiled toolchain is a few GB)
+2. Build the docker image `docker build -t minix-crosscompile -f Dockerfile.build .`
+3. Start the container `docker run --name minix-crosscompile-cont -it minix-crosscompile`
+4. In the container, build Minix in `/usr/src/` using `./releasetools/x86_hdimage.sh` or another of the build scripts. This takes about 30-45 minutes because it has to compile the entire LLVM/Clang toolchain targeting x86.
+6. (optional) Commit your docker container as a new image so that you don't need to recompile the toolchain each time while you develop: `docker commit minix-crosscompile-cont minix-crosscompile:withtools` (make take a bit, the compiled toolchain is a few GB)
+
+# Running minix
+
+1. Copy the built image back to your host machine: `docker cp minix-crosscompile-cont:/usr/src/minix_x86.iso /tmp`
+2. Run minix in Qemu: ``
+
+# Exposing a IP port to an existing container (Advice: do this at least for SSH)
+
+1. Commit the docker container: `docker commit minix-crosscompile-cont minix-crosscompile:some_branch`
+2. Start a new container redirecting the host port x (e.g. 4321) to the
+   container port y (e.g. 22 for ssh): `docker run -p 4321:22 --name minix-cont-ssh -it minix-crosscompile:some_branch`
+
+# Accessing container files via SSH
+
+1. In the container, install SSH server: `apt-get install openssh-server`
+2. In the container sets up a password for root (or any other authentication
+   method for the user you use to build): `echo 'root:pwd' | chpasswd`
+3. In the container, if you use password authentication for user root, enable it in the SSH server
+   configuration: `sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin
+   yes/g' /etc/ssh//sshd_config`
+4. In the container start SSH server: `/etc/ini.d/ssh start`
+5. Redirect port 4321 to port 22 of the container (see section above)
+6. You can now access the container via ssh on port 4321 of your host machine.
+   This means that you can use emacs or Visual Studio Code on you host machine,
+   you can access the container files via SSH using Tramp or Visual Studio Code
+   Remote - SSH. Alternatively you can set up a SSH Fuse file system
+
 
 # Setting up a new Minix install
 

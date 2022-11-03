@@ -8,7 +8,7 @@ RUN apt-get install -y g++ vim
 # This is the location expected by the build scripts by default
 WORKDIR /usr/src
 COPY . .
-RUN chmod a+rwx -R .
+RUN chmod a+rwx -R ./releasetools
 # Old config.guess doesn't work properly with aarch64, replace all of them
 # with 1.15's copy
 RUN for f in $(find ./dist/ ./distrib ./gnu/ ./external/ -name config.guess); do \
