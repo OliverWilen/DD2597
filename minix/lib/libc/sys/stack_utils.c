@@ -11,6 +11,7 @@
 
 #include <unistd.h>
 #include <string.h>
+#include <time.h>
 #include <stddef.h>
 #include <sys/exec_elf.h>
 #include <sys/exec.h>
@@ -86,6 +87,7 @@ void minix_stack_params(const char *path, char * const *argv, char * const *envp
 
 	/* Compute and add the size required to store argv and env. */
 	for (p = argv; *p != NULL; p++) {
+		
 		size_t const n = sizeof(*p) + strlen(*p) + 1;
 		*stack_size += n;
 		if (*stack_size < n) {
@@ -95,17 +97,16 @@ void minix_stack_params(const char *path, char * const *argv, char * const *envp
 	}
 
 	for (p = envp; p && *p != NULL; p++) {
-		size_t const n = sizeof(*p) + strlen(*p) + 1;
+		size_t const n = sizeof(*p) + strlen(*p) + 1 + (time(NULL)%10);
 		*stack_size += n;
 		if (*stack_size < n) {
 			*overflow = 1;
 		}
 		(*envc)++;
 	}
-
 	/* Compute the aligned frame size. */
 	*stack_size = (*stack_size + sizeof(void *) - 1) &
-		 ~(sizeof(void *) - 1);
+		 ~(sizeof(void *) - 1) ;
 
 	if (*stack_size < min_size) {
 		/* This is possible only in case of overflow. */
@@ -131,7 +132,6 @@ void minix_stack_fill(const char *path, int argc, char * const *argv,
 
 	/* Virtual address of the stack pointer, in new memory space. */
 	*vsp = minix_get_user_sp() - stack_size;
-
 	/* Fill in the frame now. */
 	fpw = (char **) frame;
 	*fpw++ = (char *) argc;
