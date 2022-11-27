@@ -20,6 +20,7 @@ SUBDIR+=	vmm_guest
 SUBDIR+=	bus
 SUBDIR+=	tty
 SUBDIR+=	hid
+SUBDIR+=    newdriver
 
 # BJG - build storage last as the ramdisk depends on some other things
 SUBDIR+=	.WAIT storage
