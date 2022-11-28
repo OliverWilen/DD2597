@@ -28,6 +28,7 @@ GTAGS
 \#*#
 CVS
 obj
+minix_x86.img
 !/.gitignore
 .gitignore
 .svn
