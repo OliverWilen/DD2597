@@ -7,6 +7,9 @@
 
 #include "netdriver.h"
 
+//Additional includes
+#include <stdio.h>
+
 /*
  * These maximum values should be at least somewhat synchronized with the
  * values in the LWIP service's ndev module.
@@ -171,9 +174,11 @@ netdriver_copy(struct netdriver_data * data, size_t off, vir_bytes addr,
 		if (copyin)
 			r = sys_safecopyfrom(vec->v_from, vec->v_gid,
 			    vec->v_offset, vec->v_addr, vec->v_bytes);
-		else
+		else{
+			//printf() Need to now the types of the below things to print them.
 			r = sys_safecopyto(vec->v_to, vec->v_gid,
 			    vec->v_offset, vec->v_addr, vec->v_bytes);
+		}
 	} else
 		r = sys_vsafecopy(vec, v);
 

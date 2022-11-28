@@ -18,6 +18,9 @@
 
 #include "virtio_net.h"
 
+//Additional includes
+#include <stdio.h>
+
 #define VERBOSE 0
 
 #if VERBOSE
@@ -110,6 +113,8 @@ static struct virtio_feature netf[] = {
 static int
 virtio_net_probe(unsigned int skip)
 {
+	printf("virtio_net_probe\n");
+
 	/* virtio-net has at least 2 queues */
 	int queues = 2;
 	net_dev= virtio_setup_device(0x00001, netdriver_name(), netf,
@@ -133,6 +138,8 @@ virtio_net_probe(unsigned int skip)
 static void
 virtio_net_config(netdriver_addr_t * addr)
 {
+	printf("virtio_net_config\n");
+
 	u32_t mac14;
 	u32_t mac56;
 	int i;
@@ -167,6 +174,8 @@ virtio_net_config(netdriver_addr_t * addr)
 static int
 virtio_net_alloc_bufs(void)
 {
+	printf("virtio_net_alloc_bufs\n");
+
 	data_vir = alloc_contig(PACKET_BUF_SZ, 0, &data_phys);
 
 	if (!data_vir)
@@ -198,6 +207,8 @@ virtio_net_alloc_bufs(void)
 static void
 virtio_net_init_queues(void)
 {
+	printf("virtio_net_init_queues\n");
+
 	int i;
 	STAILQ_INIT(&free_list);
 	STAILQ_INIT(&recv_list);
@@ -215,6 +226,8 @@ virtio_net_init_queues(void)
 static void
 virtio_net_refill_rx_queue(void)
 {
+	printf("virtio_net_refill_rx_queue\n");
+
 	struct vumap_phys phys[2];
 	struct packet *p;
 
@@ -247,6 +260,8 @@ virtio_net_refill_rx_queue(void)
 static void
 virtio_net_check_queues(void)
 {
+	printf("virtio_net_check_queues\n");
+
 	struct packet *p;
 	size_t len;
 
@@ -271,6 +286,7 @@ virtio_net_check_queues(void)
 static void
 virtio_net_check_pending(void)
 {
+	printf("virtio_net_check_pending\n");
 
 	/* Pending read and something in recv_list? */
 	if (!STAILQ_EMPTY(&recv_list))
@@ -283,6 +299,7 @@ virtio_net_check_pending(void)
 static void
 virtio_net_intr(unsigned int __unused mask)
 {
+	printf("virtio_net_intr\n");
 
 	/* Check and clear interrupt flag */
 	if (virtio_had_irq(net_dev)) {
@@ -309,6 +326,8 @@ virtio_net_intr(unsigned int __unused mask)
 static int
 virtio_net_send(struct netdriver_data * data, size_t len)
 {
+	printf("virtio_net_send\n");
+
 	struct vumap_phys phys[2];
 	struct packet *p;
 
@@ -342,6 +361,7 @@ virtio_net_send(struct netdriver_data * data, size_t len)
 static ssize_t
 virtio_net_recv(struct netdriver_data * data, size_t max)
 {
+	printf("virtio_net_recv\n");
 	struct packet *p;
 	ssize_t len;
 
@@ -369,7 +389,7 @@ virtio_net_recv(struct netdriver_data * data, size_t max)
 	if (len < NDEV_ETH_PACKET_MIN)
 		len = NDEV_ETH_PACKET_MIN;
 
-	netdriver_copyout(data, 0, p->vdata, len);
+	netdriver_copyout(data, 0, p->vdata, len); //This seems to copy data to a memory adress acroding to http://cinnabar.sosdg.org/~qiyong/qxr/minix3/source/minix/lib/libnetdriver/netdriver.c#L94
 
 	/* Clean the packet. */
 	memset(p->vhdr, 0, sizeof(*p->vhdr));
@@ -389,6 +409,8 @@ static int
 virtio_net_init(unsigned int instance, netdriver_addr_t * addr,
 	uint32_t * caps, unsigned int * ticks __unused)
 {
+	printf("virtio_net_init\n");
+
 	int r;
 
 	if ((r = virtio_net_probe(instance)) != OK)
@@ -418,6 +440,7 @@ virtio_net_init(unsigned int instance, netdriver_addr_t * addr,
 static void
 virtio_net_stop(void)
 {
+	printf("virtio_net_stop\n");
 
 	dput(("Terminating"));
 
@@ -437,6 +460,7 @@ virtio_net_stop(void)
 int
 main(int argc, char *argv[])
 {
+	printf("main\n");
 
 	env_setargs(argc, argv);
 
