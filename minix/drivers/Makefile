@@ -6,7 +6,7 @@ SUBDIR+=	clock
 SUBDIR+=	eeprom
 SUBDIR+=	examples
 SUBDIR+=	iommu
-SUBDIR+=	net
+# SUBDIR+=	net
 SUBDIR+=	power
 SUBDIR+=	printer
 SUBDIR+=	sensors
@@ -20,7 +20,9 @@ SUBDIR+=	vmm_guest
 SUBDIR+=	bus
 SUBDIR+=	tty
 SUBDIR+=	hid
+
 SUBDIR+=    newdriver
+SUBDIR+=	net
 
 # BJG - build storage last as the ramdisk depends on some other things
 SUBDIR+=	.WAIT storage
