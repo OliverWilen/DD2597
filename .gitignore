@@ -40,6 +40,7 @@ etc/spwd.db
 releasetools/image
 releasetools/kernel
 releasetools/revision
+releasetools/image.defaults
 share/zoneinfo/builddir
 external/bsd/llvm/dist/clang/test/CodeGenCXX/microsoft-abi-vtables-multiple-nonvirtual-inheritance-no-thu
 external/bsd/llvm/dist/clang/test/CodeGenCXX/microsoft-abi-vtables-multiple-nonvirtual-inheritance-pure-v
