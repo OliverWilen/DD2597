@@ -28,7 +28,7 @@ syslogd_precmd()
 	#	ln -sf /var/run/log /dev/log
 	#fi
 	# MINIX 3: end
-
+	loadkeys /usr/lib/keymaps/scandinavian.map
 	#	Create default list of syslog sockets to watch
 	#
 	( umask 022 ; > $_sockfile )

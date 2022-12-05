@@ -393,7 +393,7 @@ virtio_net_recv(struct netdriver_data * data, size_t max)
 	if (len < NDEV_ETH_PACKET_MIN)
 		len = NDEV_ETH_PACKET_MIN;
 
-	netdriver_copyout(data, 0, p->vdata, len); //This seems to copy data to a memory adress acroding to http://cinnabar.sosdg.org/~qiyong/qxr/minix3/source/minix/lib/libnetdriver/netdriver.c#L94
+	netdriver_copyout(data, 0, p->vdata, len);
 
 	/* Clean the packet. */
 	memset(p->vhdr, 0, sizeof(*p->vhdr));
