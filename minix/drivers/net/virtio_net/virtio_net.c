@@ -330,7 +330,7 @@ virtio_net_send(struct netdriver_data * data, size_t len)
 	phys[0].vp_size = sizeof(struct virtio_net_hdr);
 	//phys[1].vp_addr = 0;
 	//printf("Before monitor");
-	monitor_check_address();
+	monitor_check_address(p->pdata);
 	//printf("After monitor");
 	phys[1].vp_addr = p->pdata; //TODO
 	assert(!(phys[1].vp_addr & 1));

@@ -26,6 +26,6 @@
 #include <minix/u64.h>
 #include <minix/partition.h>
 
-int monitor_check_address(void);
+int monitor_check_address(phys_bytes address);
 
 #endif /* _MINIX_DRIVER_H */
