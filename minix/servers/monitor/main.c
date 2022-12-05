@@ -1,4 +1,4 @@
-/* Data Store Server. 
+/* Copied and altered Data Store Server. 
  * This service implements a little publish/subscribe data store that is 
  * crucial for the system's fault tolerance. Components that require state
  * can store it here, for later retrieval, e.g., after a crash and subsequent
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
       get_work(&m);
 
       if (is_notify(callnr)) {
-          printf("DS: warning, got illegal notify from: %d\n", m.m_source);
+          printf("Monitor: warning, got illegal notify from: %d\n", m.m_source);
           result = EINVAL;
           goto send_reply;
       }
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
           break;
       
       default: 
-          printf("DS: warning, got illegal request from %d\n", m.m_source);
+          printf("Monitor: warning, got illegal request from %d\n", m.m_source);
           result = EINVAL;
       }
 
@@ -109,6 +109,6 @@ static void reply(
 {
     int s = ipc_send(who_e, m_ptr);    /* send the message */
     if (OK != s)
-        printf("DS: unable to send reply to %d: %d\n", who_e, s);
+        printf("Monitor: unable to send reply to %d: %d\n", who_e, s);
 }
 
