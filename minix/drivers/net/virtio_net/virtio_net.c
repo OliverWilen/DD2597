@@ -13,6 +13,7 @@
 #include <minix/drivers.h>
 #include <minix/netdriver.h>
 #include <minix/virtio.h>
+#include <minix/monitor.h>
 
 #include <sys/queue.h>
 
@@ -327,7 +328,11 @@ virtio_net_send(struct netdriver_data * data, size_t len)
 	phys[0].vp_addr = p->phdr;
 	assert(!(phys[0].vp_addr & 1));
 	phys[0].vp_size = sizeof(struct virtio_net_hdr);
-	phys[1].vp_addr = p->pdata;
+	//phys[1].vp_addr = 0;
+	//printf("Before monitor");
+	monitor_check_address(p->pdata);
+	//printf("After monitor");
+	phys[1].vp_addr = p->pdata; //TODO
 	assert(!(phys[1].vp_addr & 1));
 	phys[1].vp_size = len;
 	virtio_to_queue(net_dev, TX_Q, phys, 2, p);
@@ -344,7 +349,6 @@ virtio_net_recv(struct netdriver_data * data, size_t max)
 {
 	struct packet *p;
 	ssize_t len;
-
 	/* Get the first received packet, if any. */
 	if (STAILQ_EMPTY(&recv_list))
 		return SUSPEND;
