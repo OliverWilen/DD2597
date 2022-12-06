@@ -50,9 +50,16 @@ int main(int argc, char **argv)
           result = EINVAL;
           goto send_reply;
       }
-
+        //endpoint_t endP;
+        //int k = getprocnr((pid_t)256, &endP);
+        //printf("k =  %d endpoint = %d, this: %d \n", k, endP, who_e);
+	    phys_bytes add = m.m_monitor_check_address.phys[1].vp_addr;
+	    phys_bytes adLen = m.m_monitor_check_address.phys[1].vp_size;
+        int v = 0;
       switch (callnr) {
       case MONITOR_DO_CHECK_ADDRESS:
+ 	    v = sys_privquery_mem(who_e, add, adLen);
+        printf("V: %d\n", v);
           result = do_check_address(&m);
           break;
       

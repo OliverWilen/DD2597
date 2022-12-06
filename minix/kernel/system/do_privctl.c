@@ -50,7 +50,7 @@ int do_privctl(struct proc * caller, message * m_ptr)
   else if(!isokendpt(m_ptr->m_lsys_krn_sys_privctl.endpt, &proc_nr))
 	return(EINVAL);
   rp = proc_addr(proc_nr);
-
+	
   switch(m_ptr->m_lsys_krn_sys_privctl.request)
   {
   case SYS_PRIV_ALLOW:
@@ -238,15 +238,18 @@ int do_privctl(struct proc * caller, message * m_ptr)
 	 */
 	addr = (phys_bytes) m_ptr->m_lsys_krn_sys_privctl.phys_start;
 	limit = addr + (phys_bytes) m_ptr->m_lsys_krn_sys_privctl.phys_len - 1;
-	if(limit < addr)
-		return EPERM;
-	if(!(sp = priv(rp)))
-		return EPERM;
+	if(limit < addr){
+		return EPERM;}
+	if(!(sp = priv(rp))){
+		return EPERM;}
 	for(i = 0; i < sp->s_nr_mem_range; i++) {
+		printf("Mem base: %lu mem limit: %lu\n", sp->s_mem_tab[i].mr_base, sp->s_mem_tab[i].mr_limit);
+		printf("Search base: %lu Search limit: %lu\n", addr, limit);
 		if(addr >= sp->s_mem_tab[i].mr_base &&
 		   limit <= sp->s_mem_tab[i].mr_limit)
 			return OK;
 	}
+	printf("no found\n");
 	return EPERM;
   }
 
