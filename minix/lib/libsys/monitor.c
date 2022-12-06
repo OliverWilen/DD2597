@@ -1,7 +1,6 @@
 
 #include <minix/monitor.h>
 #include <string.h>
-
 #include "syslib.h"
 
 static int do_invoke_monitor(message *m, int type)
@@ -14,12 +13,12 @@ static int do_invoke_monitor(message *m, int type)
 	return r;
 }
 
-int monitor_check_address(phys_bytes address)
+int monitor_check_address(struct vumap_phys phys[])
 {
 	message m;
 	int r;	
 	memset(&m, 0, sizeof(m));
-	m.m_krn_lsys_sys_umap.dst_addr = address;
+	memcpy(&m.m_monitor_check_address.phys, &phys, sizeof(m.m_monitor_check_address.phys));
 	r = do_invoke_monitor(&m, MONITOR_DO_CHECK_ADDRESS);	
 	return r;
 }
