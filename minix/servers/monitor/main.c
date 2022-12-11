@@ -21,7 +21,6 @@ static void reply(endpoint_t whom, message *m_ptr);
 
 /* SEF functions and variables. */
 static void sef_local_startup(void);
-
 /*===========================================================================*
  *				main                                         *
  *===========================================================================*/
@@ -32,7 +31,7 @@ int main(int argc, char **argv)
  * sending the reply. The loop never terminates, unless a panic occurs.
  */
   message m;
-  int result;                 
+  int result;        
   printf("Monitor started\n");
 
   /* SEF local startup. */
@@ -52,9 +51,9 @@ int main(int argc, char **argv)
       }
 
       switch (callnr) {
-      case MONITOR_DO_CHECK_ADDRESS:
-          result = do_check_address(&m);
-          break;
+      case MONITOR_DO_CHECK_ADDRESS:        
+        result = do_check_address(&m);
+        break;
       
       default: 
           printf("Monitor: warning, got illegal request from %d\n", m.m_source);

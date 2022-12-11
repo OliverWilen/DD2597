@@ -105,7 +105,7 @@ int do_info(message *m)
 	struct vmproc *vmp;
 	vir_bytes addr, size, next, ptr;
 	int r, pr, dummy, count, free_pages, largest_contig;
-
+	
 	if (vm_isokendpt(m->m_source, &pr) != OK)
 		return EINVAL;
 	vmp = &vmproc[pr];
@@ -158,7 +158,25 @@ int do_info(message *m)
 		size = sizeof(vri[0]) * count;
 
 		break;
+	case VMIW_PHYS_REGION:
+		if(m->m_lsys_vm_info.ep == SELF) {
+			m->m_lsys_vm_info.ep = m->m_source;
+		}
+		if (vm_isokendpt(m->m_lsys_vm_info.ep, &pr) != OK)
+			return EINVAL;
 
+		count = MIN(m->m_lsys_vm_info.count, MAX_VRI_COUNT);
+		next = m->m_lsys_vm_info.next;
+
+		count = get_phys_region_info(&vmproc[pr], vri, count, &next);
+
+		m->m_lsys_vm_info.count = count;
+		m->m_lsys_vm_info.next = next;
+
+		addr = (vir_bytes) vri;
+		size = sizeof(vri[0]) * count;
+
+		break;
 	default:
 		return EINVAL;
 	}

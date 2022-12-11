@@ -1452,6 +1452,19 @@ void get_usage_info(struct vmproc *vmp, struct vm_usage_info *vui)
 int get_region_info(struct vmproc *vmp, struct vm_region_info *vri,
 	int max, vir_bytes *nextp)
 {
+	return get_region_helper(vmp, vri, max, nextp, 0);
+}
+/*===========================================================================*
+ *				get_phys_region_info				     *
+ *===========================================================================*/
+int get_phys_region_info(struct vmproc *vmp, struct vm_region_info *vri,
+	int max, vir_bytes *nextp)
+{
+	return get_region_helper(vmp, vri, max, nextp, 1);
+}
+
+int get_region_helper(struct vmproc *vmp, struct vm_region_info *vri,
+	int max, vir_bytes *nextp, int physAddress){
 	struct vir_region *vr;
 	vir_bytes next;
 	int count;
@@ -1488,8 +1501,8 @@ int get_region_info(struct vmproc *vmp, struct vm_region_info *vri,
 			continue;
 		}
 
-		/* Report start+length of region starting from lowest use. */
-		vri->vri_addr = vr->vaddr + ph1->offset;
+		/* Report start+length of region starting from lowest use. */		
+		vri->vri_addr = physAddress ? ph1->ph->phys : vr->vaddr + ph1->offset;
 		vri->vri_prot = PROT_READ;
 		vri->vri_length = ph2->offset + VM_PAGE_SIZE - ph1->offset;
 

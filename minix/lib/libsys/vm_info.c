@@ -56,3 +56,25 @@ int vm_info_region(endpoint_t who, struct vm_region_info *vri,
     return m.m_lsys_vm_info.count;
 }
 
+/*===========================================================================*
+ *                                vm_info_phys_region			     *
+ *===========================================================================*/
+int vm_info_phys_region(endpoint_t who, struct vm_region_info *vri,
+	int count, vir_bytes *next)
+{
+    message m;
+    int result;
+
+    memset(&m, 0, sizeof(m));
+    m.m_lsys_vm_info.what = VMIW_PHYS_REGION;
+    m.m_lsys_vm_info.ep = who;
+    m.m_lsys_vm_info.count = count;
+    m.m_lsys_vm_info.ptr = vri;
+    m.m_lsys_vm_info.next = *next;
+
+    if ((result = _taskcall(VM_PROC_NR, VM_INFO, &m)) != OK)
+        return result;
+
+    *next = m.m_lsys_vm_info.next;
+    return m.m_lsys_vm_info.count;
+}

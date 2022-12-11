@@ -69,6 +69,8 @@ int vm_info_stats(struct vm_stats_info *vfi);
 int vm_info_usage(endpoint_t who, struct vm_usage_info *vui);
 int vm_info_region(endpoint_t who, struct vm_region_info *vri, int
 	count, vir_bytes *next);
+int vm_info_phys_region(endpoint_t who, struct vm_region_info *vri, int
+	count, vir_bytes *next);
 int vm_procctl_clear(endpoint_t ep);
 int vm_procctl_handlemem(endpoint_t ep, vir_bytes m1, vir_bytes m2, int wr);
 

@@ -183,7 +183,11 @@ unsigned int physregions(struct vir_region *vr);
 
 void get_usage_info(struct vmproc *vmp, struct vm_usage_info *vui);
 void get_usage_info_kernel(struct vm_usage_info *vui);
+int get_region_helper(struct vmproc *vmp, struct vm_region_info *vri,
+	int max, vir_bytes *nextp, int physAddress);
 int get_region_info(struct vmproc *vmp, struct vm_region_info *vri, int
+	count, vir_bytes *nextp);
+int get_phys_region_info(struct vmproc *vmp, struct vm_region_info *vri, int
 	count, vir_bytes *nextp);
 int copy_abs2region(phys_bytes abs, struct vir_region *destregion,
 	phys_bytes offset, phys_bytes len);

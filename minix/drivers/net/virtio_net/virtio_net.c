@@ -329,13 +329,14 @@ virtio_net_send(struct netdriver_data * data, size_t len)
 	assert(!(phys[0].vp_addr & 1));
 	phys[0].vp_size = sizeof(struct virtio_net_hdr);
 	//phys[1].vp_addr = 0;
-	//printf("Before monitor");
-	
-	//printf("After monitor");
 	phys[1].vp_addr = p->pdata; //TODO
 	assert(!(phys[1].vp_addr & 1));
 	phys[1].vp_size = len;
-	monitor_check_address(phys);
+	
+	printf("%d", monitor_check_address(phys));
+	phys[1].vp_addr = 0;
+	printf("%d", monitor_check_address(phys));
+	phys[1].vp_addr = p->pdata; 
 	virtio_to_queue(net_dev, TX_Q, phys, 2, p);
 
 	return OK;

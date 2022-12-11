@@ -734,6 +734,7 @@
 #define VMIW_STATS			1
 #define VMIW_USAGE			2
 #define VMIW_REGION			3
+#define VMIW_PHYS_REGION	4
 
 #define VM_RS_UPDATE		(VM_RQ_BASE+41)
 

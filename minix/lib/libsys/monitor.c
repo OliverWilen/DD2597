@@ -17,8 +17,10 @@ int monitor_check_address(struct vumap_phys phys[])
 {
 	message m;
 	int r;	
+	
 	memset(&m, 0, sizeof(m));
-	memcpy(&m.m_monitor_check_address.phys, &phys, sizeof(m.m_monitor_check_address.phys));
+	memcpy(m.m_monitor_check_address.phys, phys, sizeof(m.m_monitor_check_address.phys));
+
 	r = do_invoke_monitor(&m, MONITOR_DO_CHECK_ADDRESS);	
 	return r;
 }
