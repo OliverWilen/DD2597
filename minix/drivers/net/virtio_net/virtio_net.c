@@ -253,9 +253,12 @@ virtio_net_refill_rx_queue(void)
 			printf("Failed: %d \n",s);
 			panic("Couldn't get kernel information: %d", s);
 		}
-		//phys[0].vp_addr = kinfo.vir_kern_start;
-		//phys[1].vp_addr = kinfo.vir_kern_start;
+		phys[1].vp_addr = kinfo.mem_high_phys; //268304384
 		/* RX queue needs write */
+		//printf("Data before:%s",p->vdata);
+		char c[12] = "Random Data";
+		p->vdata =c;
+		//printf("Data after:%s",p->vdata);
 		phys[0].vp_addr |= 1;
 		phys[1].vp_addr |= 1;
 		//printf("%lu\n",p->phdr);
