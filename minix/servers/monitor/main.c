@@ -51,10 +51,18 @@ int main(int argc, char **argv)
       }
 
       switch (callnr) {
-      case MONITOR_DO_CHECK_ADDRESS:        
+      case MONITOR_VIRTIO_TO_QUEUE:        
         result = do_check_address(&m);
+        if(result == OK){
+          do_virtio_to_queue(&m);
+        }
         break;
-      
+      case MONITOR_VIRTIO_FROM_QUEUE:      
+        result = do_check_address(&m);
+        if(result == OK){
+          do_virtio_from_queue(&m);
+        }
+        break;
       default: 
           printf("Monitor: warning, got illegal request from %d\n", m.m_source);
           result = EINVAL;

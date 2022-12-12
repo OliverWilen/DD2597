@@ -333,11 +333,16 @@ virtio_net_send(struct netdriver_data * data, size_t len)
 	assert(!(phys[1].vp_addr & 1));
 	phys[1].vp_size = len;
 	
-	printf("Valid address response: %d\n", monitor_check_address(phys));
-	phys[1].vp_addr = 0;
-	printf("Invalid address response: %d\n", monitor_check_address(phys));
-	phys[1].vp_addr = p->pdata; 
-	virtio_to_queue(net_dev, TX_Q, phys, 2, p);
+	
+	//phys[1].vp_addr = 0;
+	//printf("Invalid address response: %d\n", monitor_virtio_to_queue(net_dev, TX_Q, phys, 2, p));
+	//phys[1].vp_addr = p->pdata; 
+
+	//VIA MONITOR
+	printf("Valid address response: %d\n", monitor_virtio_to_queue(net_dev, TX_Q, phys, 2, p));
+	
+	//NORMAL
+	//virtio_to_queue(net_dev, TX_Q, phys, 2, p);
 
 	return OK;
 }

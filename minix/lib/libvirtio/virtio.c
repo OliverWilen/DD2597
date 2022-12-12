@@ -183,7 +183,6 @@ err:
 	free(ret);
 	return NULL;
 }
-
 static int
 init_device(int devind, struct virtio_device *dev)
 {
@@ -606,16 +605,15 @@ int
 virtio_to_queue(struct virtio_device *dev, int qidx, struct vumap_phys *bufs,
 	size_t num, void *data)
 {
+	
 	u16_t free_first;
 	int left;
 	struct virtio_queue *q = &dev->queues[qidx];
 	struct vring *vring = &q->vring;
-
-	assert(0 <= qidx && qidx <= dev->num_queues);
-
+	
+	assert(0 <= qidx && qidx <= dev->num_queues);	
 	if (!data)
 		panic("%s: NULL data received queue %d", dev->name, qidx);
-
 	free_first = q->free_head;
 
 	left = (int)q->free_num - (int)num;

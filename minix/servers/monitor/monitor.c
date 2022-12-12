@@ -1,7 +1,7 @@
 #include "inc.h"
 #include "monitor.h"
 #include <minix/vm.h>
-
+#include <minix/virtio.h>
 /*===========================================================================*
  *		            sef_cb_init_fresh                                *
  *===========================================================================*/
@@ -38,5 +38,19 @@ int do_check_address(message *m_ptr)
 	
   return(EFAULT);
 }
+int do_virtio_to_queue(message *m_ptr) {
+	struct virtio_device *dev = m_ptr->m_monitor_check_address.dev;
+	int qidx = m_ptr->m_monitor_check_address.qidx;
+	struct vumap_phys *bufs = m_ptr->m_monitor_check_address.phys;
+	size_t num = m_ptr->m_monitor_check_address.num;
+	void *data= m_ptr->m_monitor_check_address.data;
+	virtio_to_queue(dev, qidx, bufs, num, data);
+	printf("VIRTIO: %d\n", m_ptr->m_monitor_check_address.qidx);
+	return(OK);
+}
 
+int do_virtio_from_queue(message *m_ptr) {
+	printf("VIRTIO FROM QUEUE");
+	return(OK);
+}
 

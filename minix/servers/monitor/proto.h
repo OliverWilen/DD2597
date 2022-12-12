@@ -10,5 +10,6 @@ int main(int argc, char **argv);
 int do_check_address(message *m_ptr);
 
 int sef_cb_init_fresh(int type, sef_init_info_t *info);
-
+int do_virtio_to_queue(message *m_ptr);
+int do_virtio_from_queue(message *m_ptr);
 #endif
