@@ -115,8 +115,6 @@ static struct virtio_feature netf[] = {
 static int
 virtio_net_probe(unsigned int skip)
 {
-	//printf("virtio_net_probe\n");
-
 	/* virtio-net has at least 2 queues */
 	int queues = 2;
 	net_dev= virtio_setup_device(0x00001, netdriver_name(), netf,
@@ -140,8 +138,6 @@ virtio_net_probe(unsigned int skip)
 static void
 virtio_net_config(netdriver_addr_t * addr)
 {
-	//printf("virtio_net_config\n");
-
 	u32_t mac14;
 	u32_t mac56;
 	int i;
@@ -176,8 +172,6 @@ virtio_net_config(netdriver_addr_t * addr)
 static int
 virtio_net_alloc_bufs(void)
 {
-	//printf("virtio_net_alloc_bufs\n");
-
 	data_vir = alloc_contig(PACKET_BUF_SZ, 0, &data_phys);
 
 	if (!data_vir)
@@ -209,8 +203,6 @@ virtio_net_alloc_bufs(void)
 static void
 virtio_net_init_queues(void)
 {
-	//printf("virtio_net_init_queues\n");
-
 	int i;
 	STAILQ_INIT(&free_list);
 	STAILQ_INIT(&recv_list);
@@ -246,26 +238,20 @@ virtio_net_refill_rx_queue(void)
 		phys[1].vp_addr = p->pdata;
 		assert(!(phys[1].vp_addr & 1));
 		phys[1].vp_size = MAX_PACK_SIZE;
-		struct kinfo kinfo;		/* kernel information */
-  		int s;
 
+        // Get Kernel Info so we know where to Insert our data to get kernel panic
+		struct kinfo kinfo;
+  		int s;
 		if (OK != (s=sys_getkinfo(&kinfo))) {
-			printf("Failed: %d \n",s);
 			panic("Couldn't get kernel information: %d", s);
 		}
-		phys[1].vp_addr = kinfo.mem_high_phys; //268304384
-		/* RX queue needs write */
-		//printf("Data before:%s",p->vdata);
-		char c[12] = "Random Data";
-		p->vdata =c;
-		//printf("Data after:%s",p->vdata);
+		phys[1].vp_addr = kinfo.mem_high_phys -100; //Need -100 since this represents the highest adress of the kernel. 100 is an arbitary number we just need to get into kernel spac
+
+        /* RX queue needs write */
 		phys[0].vp_addr |= 1;
 		phys[1].vp_addr |= 1;
-		//printf("%lu\n",p->phdr);
-		//monitor_check_address(p->pdata);
 
 
-		//printf(p->vhdr);
 		virtio_to_queue(net_dev, RX_Q, phys, 2, p);
 		in_rx++;
 	}
@@ -277,7 +263,6 @@ virtio_net_refill_rx_queue(void)
 static void
 virtio_net_check_queues(void)
 {
-	//printf("virtio_net_check_queues\n");
 
 	struct packet *p;
 	size_t len;
@@ -303,8 +288,6 @@ virtio_net_check_queues(void)
 static void
 virtio_net_check_pending(void)
 {
-	//printf("virtio_net_check_pending\n");
-
 	/* Pending read and something in recv_list? */
 	if (!STAILQ_EMPTY(&recv_list))
 		netdriver_recv();
@@ -316,8 +299,6 @@ virtio_net_check_pending(void)
 static void
 virtio_net_intr(unsigned int __unused mask)
 {
-	//printf("virtio_net_intr\n");
-
 	/* Check and clear interrupt flag */
 	if (virtio_had_irq(net_dev)) {
 		virtio_net_check_queues();
@@ -343,8 +324,6 @@ virtio_net_intr(unsigned int __unused mask)
 static int
 virtio_net_send(struct netdriver_data * data, size_t len)
 {
-	//printf("virtio_net_send\n");
-
 	struct vumap_phys phys[2];
 	struct packet *p;
 
@@ -363,10 +342,6 @@ virtio_net_send(struct netdriver_data * data, size_t len)
 	phys[0].vp_addr = p->phdr;
 	assert(!(phys[0].vp_addr & 1));
 	phys[0].vp_size = sizeof(struct virtio_net_hdr);
-	//phys[1].vp_addr = 0;
-	//printf("Before monitor");
-	//monitor_check_address(p->pdata);
-	//printf("After monitor");
 	phys[1].vp_addr = p->pdata; //TODO
 	assert(!(phys[1].vp_addr & 1));
 	phys[1].vp_size = len;
@@ -382,18 +357,16 @@ virtio_net_send(struct netdriver_data * data, size_t len)
 static ssize_t
 virtio_net_recv(struct netdriver_data * data, size_t max)
 {
-	printf("virtio_net_recv\n");
-
 	struct kinfo kinfo;		/* kernel information */
   	int s;
 
 	if (OK != (s=sys_getkinfo(&kinfo))) {
-		printf("Failed: %d \n",s);
+		//printf("Failed: %d \n",s);
 		panic("Couldn't get kernel information: %d", s);
 	}else{
-		printf("Kernel phys_bytes: %lu \n",kinfo.mem_high_phys);
-		printf("Kernel vir_kern_start: %lu \n",kinfo.vir_kern_start);
-		printf("Kernel bootstrap_start:%lu  bootstrap_len:%lu \n",kinfo.bootstrap_start, kinfo.bootstrap_len);
+		//printf("Kernel phys_bytes: %lu \n",kinfo.mem_high_phys);
+		//printf("Kernel vir_kern_start: %lu \n",kinfo.vir_kern_start);
+		//printf("Kernel bootstrap_start:%lu  bootstrap_len:%lu \n",kinfo.bootstrap_start, kinfo.bootstrap_len);
 	}
 
 
@@ -443,8 +416,6 @@ static int
 virtio_net_init(unsigned int instance, netdriver_addr_t * addr,
 	uint32_t * caps, unsigned int * ticks __unused)
 {
-	//printf("virtio_net_init\n");
-
 	int r;
 
 	if ((r = virtio_net_probe(instance)) != OK)
@@ -474,8 +445,6 @@ virtio_net_init(unsigned int instance, netdriver_addr_t * addr,
 static void
 virtio_net_stop(void)
 {
-	//printf("virtio_net_stop\n");
-
 	dput(("Terminating"));
 
 	free_contig(data_vir, PACKET_BUF_SZ);
@@ -494,8 +463,6 @@ virtio_net_stop(void)
 int
 main(int argc, char *argv[])
 {
-	//printf("main\n");
-
 	env_setargs(argc, argv);
 
 	netdriver_task(&virtio_net_table);
