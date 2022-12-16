@@ -327,22 +327,19 @@ virtio_net_send(struct netdriver_data * data, size_t len)
 
 	phys[0].vp_addr = p->phdr;
 	assert(!(phys[0].vp_addr & 1));
-	phys[0].vp_size = sizeof(struct virtio_net_hdr);
-	//phys[1].vp_addr = 0;
-	phys[1].vp_addr = p->pdata; //TODO
+	phys[0].vp_size = sizeof(struct virtio_net_hdr);	
+	
 	assert(!(phys[1].vp_addr & 1));
 	phys[1].vp_size = len;
 	
-	
+	//CHANGED
 	//phys[1].vp_addr = 0;
-	//printf("Invalid address response: %d\n", monitor_virtio_to_queue(net_dev, TX_Q, phys, 2, p));
-	//phys[1].vp_addr = p->pdata; 
-
-	//VIA MONITOR
-	printf("Valid address response: %d\n", monitor_virtio_to_queue(net_dev, TX_Q, phys, 2, p));
+	//Normal
+	phys[1].vp_addr = p->pdata;
 	
+	printf("Check address response: %d\n", monitor_check_address(phys));
 	//NORMAL
-	//virtio_to_queue(net_dev, TX_Q, phys, 2, p);
+	virtio_to_queue(net_dev, TX_Q, phys, 2, p);
 
 	return OK;
 }

@@ -26,7 +26,8 @@
 #include <minix/u64.h>
 #include <minix/partition.h>
 
-int monitor_virtio_to_queue(void *dev, int qidx, struct vumap_phys phys[],
-	size_t num, void *data);
+int monitor_check_address(struct vumap_phys phys[]);
+int monitor_virtio_init(void);
+int monitor_virtio_to_queue(struct vumap_phys phys[]);
 int monitor_virtio_from_queue(struct vumap_phys phys[]);
 #endif /* _MINIX_DRIVER_H */

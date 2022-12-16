@@ -13,17 +13,33 @@ static int do_invoke_monitor(message *m, int type)
 	return r;
 }
 
-int monitor_virtio_to_queue(void *dev, int qidx, struct vumap_phys phys[],
-	size_t num, void *data)
+int monitor_check_address(struct vumap_phys phys[])
+{
+	message m;
+	int r;	
+	
+	memset(&m, 0, sizeof(m));
+	memcpy(m.m_monitor_check_address.phys, phys, sizeof(m.m_monitor_check_address.phys));
+
+	r = do_invoke_monitor(&m, MONITOR_CHECK_ADDRESS);	
+	return r;
+}
+int monitor_virtio_init()
 {
 	message m;
 	int r;	
 	memset(&m, 0, sizeof(m));
+	r = do_invoke_monitor(&m, MONITOR_VIRTIO_INIT);	
+	return r;
+}
+
+int monitor_virtio_to_queue(struct vumap_phys phys[])
+{
+	message m;
+	int r;	
+	
+	memset(&m, 0, sizeof(m));
 	memcpy(m.m_monitor_check_address.phys, phys, sizeof(m.m_monitor_check_address.phys));
-	m.m_monitor_check_address.dev = dev;
-	m.m_monitor_check_address.qidx = qidx;
-	m.m_monitor_check_address.num = num;
-	m.m_monitor_check_address.data = data;
 	r = do_invoke_monitor(&m, MONITOR_VIRTIO_TO_QUEUE);	
 	return r;
 }
