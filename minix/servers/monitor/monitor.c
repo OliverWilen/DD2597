@@ -1,7 +1,7 @@
 #include "inc.h"
 #include "monitor.h"
 #include <minix/vm.h>
-
+#include <minix/virtio.h>
 /*===========================================================================*
  *		            sef_cb_init_fresh                                *
  *===========================================================================*/
@@ -13,6 +13,11 @@ int sef_cb_init_fresh(int UNUSED(type), sef_init_info_t *info)
 /*===========================================================================*
  *				do_publish				     *
  *===========================================================================*/
+int do_virtio_init(message *m_ptr){
+	printf("VIRTIO INIT");
+	return(OK);
+}
+
 int do_check_address(message *m_ptr)
 {	
 	vir_bytes next = 0;
@@ -38,5 +43,23 @@ int do_check_address(message *m_ptr)
 	
   return(EFAULT);
 }
+int do_virtio_to_queue(message *m_ptr) {
+	int r;
+	//Check address
+	if((r = do_check_address(m_ptr)) != OK)
+		return r;	
 
+	printf("VIRTIO FROM QUEUE");
+	return(OK);
+}
+
+int do_virtio_from_queue(message *m_ptr) {
+	int r;
+	//Check address
+	if((r = do_check_address(m_ptr)) != OK)
+		return r;	
+	
+	printf("VIRTIO FROM QUEUE");
+	return(OK);
+}
 

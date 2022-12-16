@@ -1,8 +1,8 @@
 PROG=	monitor
 SRCS=	main.c monitor.c
 
-DPADD+=	${LIBSYS}
-LDADD+=	-lsys
+DPADD+=	${LIBSYS} ${LIBVIRTIO}
+LDADD+=	-lsys -lvirtio
 
 # FIXME: workaround for the linker pass not seeing weak symbols. The
 # following symbols are essential for magic instrumentation, since they

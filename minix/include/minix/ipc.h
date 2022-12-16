@@ -2401,8 +2401,12 @@ typedef struct {
 _ASSERT_MSG_SIZE(mess_vmmcp_reply);
 
 typedef struct {
+	void *dev; // 4 bytes
+	int qidx;	//4 bytes	
 	struct vumap_phys phys[2]; // 16 bytes
-	uint8_t padding[40]; //56-16
+	size_t num; //4 bytes
+	void *data; //4 bytes
+	uint8_t padding[24]; //56-32
 } mess_monitor_check_address;
 _ASSERT_MSG_SIZE(mess_monitor_check_address);
 

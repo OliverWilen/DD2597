@@ -1152,9 +1152,11 @@
  *===========================================================================*/
 
 /* Base type for network device requests and responses. */
-#define MONITOR_BASE		0x1B00		
-#define MONITOR_DO_CHECK_ADDRESS		(MONITOR_BASE + 0)	
-
+#define MONITOR_BASE		0x1B00	
+#define MONITOR_VIRTIO_INIT		(MONITOR_BASE + 0)	
+#define MONITOR_VIRTIO_TO_QUEUE		(MONITOR_BASE + 1)	
+#define MONITOR_VIRTIO_FROM_QUEUE		(MONITOR_BASE + 2)	
+#define MONITOR_CHECK_ADDRESS		(MONITOR_BASE + 3)	
 
 
 /*===========================================================================*
