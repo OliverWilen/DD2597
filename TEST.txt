@@ -1,0 +1,21 @@
+The project compiles like normal.
+
+To run minix
+qemu-system-i386 --enable-kvm -m 256 -hda minix_x86.img -nic user,model=virtio-net-pci
+or to capture network traffic 
+qemu-system-i386 --enable-kvm -m 256 -hda minix_x86.img -nic tap,model=virtio-net-pci
+
+Login with root
+
+Then setup network and restart network service using
+netconf  #Enter 3 times to use default settings
+service network restart
+
+For each packet being sent, it should now be a print which writes the monitor
+response for a invalid address and a valid address. The response for an invalid and valid 
+responses should be -14 which is EFAULT and 0 for OK. 
+
+As it is now we should see packets being sent out if we capture the traffic.
+But if we comment out lines 341 and 342 in "minix/drivers/net/virtio_net/virtio_net.c"
+the driver will instead use the invalid address and there should be no packets being sent.
+

@@ -332,16 +332,22 @@ virtio_net_send(struct netdriver_data * data, size_t len)
 	assert(!(phys[1].vp_addr & 1));
 	phys[1].vp_size = len;
 	
-	//CHANGED
-	//phys[1].vp_addr = 0;
-	//Normal
-	phys[1].vp_addr = p->pdata;
 	
-	printf("Check address response: %d\n", monitor_check_address(phys));
-	//NORMAL
-	virtio_to_queue(net_dev, TX_Q, phys, 2, p);
+	int r;
+	phys[1].vp_addr = 1000;
+	printf("Invalid address: 0x%lx response: %d\n", phys[1].vp_addr, r = monitor_check_address(phys));
 
-	return OK;
+	//Remove to test bad address
+	phys[1].vp_addr = p->pdata;	
+	printf("Valid address: 0x%lx response: %d\n", phys[1].vp_addr, r = monitor_check_address(phys));
+	//
+
+	if(r == OK)
+		virtio_to_queue(net_dev, TX_Q, phys, 2, p);
+		
+	
+	return r;
+	
 }
 
 /*
