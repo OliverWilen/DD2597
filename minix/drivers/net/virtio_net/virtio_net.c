@@ -339,7 +339,7 @@ virtio_net_send(struct netdriver_data * data, size_t len)
 	//phys[1].vp_addr = p->pdata; 
 
 	//VIA MONITOR 
-	cp_grant_id_t id = cpf_grant_direct(11, vir_bytes addr, size_t bytes, CPF_READ & CPF_WRITE);
+	cp_grant_id_t id = cpf_grant_direct(MONITOR_PROC_NR, phys[1].vp_addr, phys[1].vp_size, CPF_READ & CPF_WRITE);
 
 	//cpf_grant_direct(MONITOR_PROC_NR, phys[1].vp_addr, phys[1].vp_size, CPF_READ & CPF_WRITE);
  

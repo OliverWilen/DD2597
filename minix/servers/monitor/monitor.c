@@ -39,6 +39,9 @@ int do_check_address(message *m_ptr)
   return(EFAULT);
 }
 int do_virtio_to_queue(message *m_ptr) {
+
+	cp_grant_id_t grantID = m_ptr->m_monitor_check_address.grantID;
+	printf("GrantID is: %d\n",grantID);
 	struct virtio_device *dev = m_ptr->m_monitor_check_address.dev;
 	int qidx = m_ptr->m_monitor_check_address.qidx;
 	struct vumap_phys *bufs = m_ptr->m_monitor_check_address.phys;
