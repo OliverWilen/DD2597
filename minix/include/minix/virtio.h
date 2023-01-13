@@ -57,6 +57,10 @@ struct virtio_device *virtio_setup_device(u16_t subdevid,
 		int feature_count,
 		int threads, int skip);
 
+
+/*Return the size of the device*/
+int get_device_size(struct virtio_device *dev);
+
 /* Attempt to allocate queue_cnt memory for queues */
 int virtio_alloc_queues(struct virtio_device *dev, int num_queues);
 
