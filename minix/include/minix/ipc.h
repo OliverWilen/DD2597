@@ -2407,7 +2407,7 @@ typedef struct {
 	size_t num; //4 bytes
 	void *data; //4 bytes
 	cp_grant_id_t grantID; //4 bytes
-	uint8_t padding[20]; //56-32
+	uint8_t padding[20]; //56-36
 	
 } mess_monitor_check_address;
 _ASSERT_MSG_SIZE(mess_monitor_check_address);
