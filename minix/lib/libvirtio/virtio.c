@@ -608,8 +608,8 @@ virtio_to_queue(struct virtio_device *dev, int qidx, struct vumap_phys *bufs,
 	
 	u16_t free_first;
 	int left;
-	//SIGSEGV
 	struct virtio_queue *q = &dev->queues[qidx];
+	//SIGSEGV
 	struct vring *vring = &q->vring;
 	
 	assert(0 <= qidx && qidx <= dev->num_queues);	

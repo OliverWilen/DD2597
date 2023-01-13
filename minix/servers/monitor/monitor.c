@@ -13,8 +13,7 @@ int sef_cb_init_fresh(int UNUSED(type), sef_init_info_t *info)
 /*===========================================================================*
  *				do_publish				     *
  *===========================================================================*/
-int do_check_address(message *m_ptr)
-{	
+int do_check_address(message *m_ptr) {	
 	vir_bytes next = 0;
 	struct vm_region_info vri[MAX_VRI_COUNT];
 	phys_bytes checkBase = m_ptr->m_monitor_check_address.phys[1].vp_addr;
@@ -39,10 +38,13 @@ int do_check_address(message *m_ptr)
   return(EFAULT);
 }
 int do_virtio_to_queue(message *m_ptr) {
+	struct virtio_device *dev;
+	int ret;
 
 	cp_grant_id_t grantID = m_ptr->m_monitor_check_address.grantID;
-	printf("GrantID is: %d\n",grantID);
-	struct virtio_device *dev = m_ptr->m_monitor_check_address.dev;
+	endpoint_t who_e = m_ptr->m_source;
+	if ((ret = sys_safecopyto(who_e, grantID, 0, (vir_bytes) dev, 48)) != OK)
+        return ret;
 	int qidx = m_ptr->m_monitor_check_address.qidx;
 	struct vumap_phys *bufs = m_ptr->m_monitor_check_address.phys;
 	size_t num = m_ptr->m_monitor_check_address.num;
