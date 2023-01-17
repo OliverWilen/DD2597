@@ -334,7 +334,15 @@ virtio_net_send(struct netdriver_data * data, size_t len)
 
 	//Grant for device pointer that is used by the monitor
 	int device_size = get_device_size(net_dev);
-	cp_grant_id_t monitor_grant_id = cpf_grant_direct(MONITOR_PROC_NR, (vir_bytes) net_dev, device_size, CPF_READ + CPF_WRITE);
+	printf("%p\n", &net_dev);
+	printf("%p\n", net_dev);
+	printf("VIRTIO_NET\n");
+	cp_grant_id_t monitor_grant_id = cpf_grant_direct(MONITOR_PROC_NR, (vir_bytes) &net_dev, device_size, CPF_READ + CPF_WRITE);
+	//cp_grant_id_t monitor_grant_id2 = cpf_grant_direct(MONITOR_PROC_NR, (vir_bytes) &net_dev->queue, get_queue_size(net_dev->queue)*2, CPF_READ + CPF_WRITE);
+	if (!GRANT_VALID(monitor_grant_id)) {
+                printf("GRANTNOTVALID\n");
+        }
+
 
 
 	//Intercept the drivers call to put packet into queue and verify that the adress is correct.

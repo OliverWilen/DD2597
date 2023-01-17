@@ -43,8 +43,17 @@ int do_virtio_to_queue(message *m_ptr) {
 
 	cp_grant_id_t grantID = m_ptr->m_monitor_check_address.grantID;
 	endpoint_t who_e = m_ptr->m_source;
-	if ((ret = sys_safecopyto(who_e, grantID, 0, (vir_bytes) dev, 48)) != OK)
-        return ret;
+	printf("%p\n", &dev);
+	printf("%p\n", dev);
+	ret = sys_safecopyfrom(who_e, grantID, 0, (vir_bytes) &dev, 48);
+	printf("%p\n", &dev);
+	printf("%p\n", dev);
+
+	if (ret != OK){
+		printf("SAFECOPY FAILED: %d", ret);
+		//return ret;
+	}
+
 	int qidx = m_ptr->m_monitor_check_address.qidx;
 	struct vumap_phys *bufs = m_ptr->m_monitor_check_address.phys;
 	size_t num = m_ptr->m_monitor_check_address.num;
