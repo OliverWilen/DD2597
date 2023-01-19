@@ -1154,8 +1154,8 @@
 /* Base type for network device requests and responses. */
 #define MONITOR_BASE		0x1B00		
 #define MONITOR_VIRTIO_TO_QUEUE		(MONITOR_BASE + 0)	
-#define MONITOR_VIRTIO_FROM_QUEUE		(MONITOR_BASE + 1)	
-
+#define MONITOR_VIRTIO_FROM_QUEUE		(MONITOR_BASE + 1)
+#define MONITOR_ALLOC_CONTIG			(MONITOR_BASE + 2)	
 
 /*===========================================================================*
  *		Internal codes used by several services			     *

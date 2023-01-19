@@ -7,7 +7,7 @@
 #include <minix/bitmap.h>
 #include <minix/param.h>
 #include <regex.h>
-
+#include <minix/monitor.h>
 
 
 

@@ -26,7 +26,13 @@
 #include <minix/u64.h>
 #include <minix/partition.h>
 
+struct monitor_ret{
+  cp_grant_id_t gid;
+  char* data_vir;
+};
+
 int monitor_virtio_to_queue(void *dev, int qidx, struct vumap_phys phys[],
-	size_t num, void *data, cp_grant_id_t grantID);
+	size_t num, void *data, cp_grant_id_t grantID, cp_grant_id_t grant_ID_2);
 int monitor_virtio_from_queue(struct vumap_phys phys[]);
+int monitor_alloc_contig(int buf_packet_size);
 #endif /* _MINIX_DRIVER_H */

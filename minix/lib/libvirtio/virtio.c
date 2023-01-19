@@ -105,9 +105,24 @@ static void virtio_irq_unregister(struct virtio_device *dev);
 static int wants_kick(struct virtio_queue *q);
 static void kick_queue(struct virtio_device *dev, int qidx);
 
+vir_bytes get_virtio_queue_address(struct virtio_device *dev, int qidx){
+	//printf("Queue vaddr: %lu\n Queue & addr: %lu\n", (vir_bytes) dev->queues[qidx].vaddr, (vir_bytes) &dev->queues[qidx].vring);
+	return (vir_bytes) &dev->queues[qidx].vring;
+}
+
+u32_t get_device_ring_size(struct virtio_device *dev, int qidx){
+	//printf("SUCCESS NAME: %s\n", dev->name);
+	return (sizeof(dev->queues[qidx].ring_size));
+}
 
 int get_device_size(struct virtio_device *dev){
 	return sizeof(*dev);
+}
+
+/*For debugging purposes*/
+int print_device_name(struct virtio_device *dev){
+	printf("DEVICE NAME: %s\n", dev->name);
+	return (OK);
 }
 
 struct virtio_device *
@@ -610,7 +625,6 @@ int
 virtio_to_queue(struct virtio_device *dev, int qidx, struct vumap_phys *bufs,
 	size_t num, void *data)
 {
-	
 	u16_t free_first;
 	int left;
 	struct virtio_queue *q = &dev->queues[qidx];

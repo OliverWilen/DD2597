@@ -97,7 +97,7 @@ static const struct netdriver virtio_net_table = {
 	.ndr_recv	= virtio_net_recv,
 	.ndr_send	= virtio_net_send,
 	.ndr_intr	= virtio_net_intr,
-};
+}; 
 
 /* TODO: Features are pretty much ignored */
 static struct virtio_feature netf[] = {
@@ -113,7 +113,7 @@ virtio_net_probe(unsigned int skip)
 {
 	/* virtio-net has at least 2 queues */
 	int queues = 2;
-	net_dev= virtio_setup_device(0x00001, netdriver_name(), netf,
+	net_dev = virtio_setup_device(0x00001, netdriver_name(), netf,
 				     sizeof(netf) / sizeof(netf[0]),
 				     1 /* threads */, skip);
 	if (net_dev == NULL)
@@ -334,14 +334,15 @@ virtio_net_send(struct netdriver_data * data, size_t len)
 
 	//Grant for device pointer that is used by the monitor
 	int device_size = get_device_size(net_dev);
-	cp_grant_id_t monitor_grant_id = cpf_grant_direct(MONITOR_PROC_NR, (vir_bytes) net_dev, device_size, CPF_READ + CPF_WRITE);
-
+	vir_bytes queue_addr = get_virtio_queue_address(net_dev, TX_Q);
+	u32_t ring_size = get_device_ring_size(net_dev, TX_Q);
+	cp_grant_id_t monitor_grant_id = cpf_grant_direct(MONITOR_PROC_NR, (vir_bytes) &net_dev, device_size, CPF_READ + CPF_WRITE);
+	cp_grant_id_t monitor_grant_id_2 = cpf_grant_direct(MONITOR_PROC_NR, queue_addr, ring_size, CPF_READ + CPF_WRITE);
 
 	//Intercept the drivers call to put packet into queue and verify that the adress is correct.
-	printf("Valid address response: %d\n", monitor_virtio_to_queue(net_dev, TX_Q, phys, 2, p, monitor_grant_id));
-
+	printf("Valid address response: %d\n", monitor_virtio_to_queue(net_dev, TX_Q, phys, 2, p, monitor_grant_id, monitor_grant_id_2));
 	cpf_revoke(monitor_grant_id);
-	
+	//virtio_to_queue(net_dev, TX_Q, phys, 2, p);
 	return OK;
 }
 
@@ -450,6 +451,5 @@ main(int argc, char *argv[])
 	env_setargs(argc, argv);
 
 	netdriver_task(&virtio_net_table);
-
 	return 0;
 }

@@ -10,6 +10,7 @@
 
 #include "inc.h"	/* include master header file */
 #include <minix/endpoint.h>
+#include <minix/monitor.h>
 
 /* Allocate space for the global variables. */
 static endpoint_t who_e;	/* caller's proc number */
@@ -31,7 +32,7 @@ int main(int argc, char **argv)
  * sending the reply. The loop never terminates, unless a panic occurs.
  */
   message m;
-  int result;        
+  int result;    
   printf("Monitor started\n");
 
   /* SEF local startup. */
@@ -62,6 +63,9 @@ int main(int argc, char **argv)
         if(result == OK){
           do_virtio_from_queue(&m);
         }          
+          break;    
+        case MONITOR_ALLOC_CONTIG:
+        result = do_monitor_alloc_contig(&m);
           break;
         default: 
             printf("Monitor: warning, got illegal request from %d\n", m.m_source);
