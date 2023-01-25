@@ -58,7 +58,7 @@ struct virtio_device *virtio_setup_device(u16_t subdevid,
 		int threads, int skip);
 
 /*Return device queue physical address*/
-vir_bytes get_virtio_queue_address(struct virtio_device*, int qidx);
+phys_bytes get_virtio_queue_address(struct virtio_device*, int qidx);
 
 /*Return the ring size of queue of device*/
 u32_t get_device_ring_size(struct virtio_device *dev, int qidx);

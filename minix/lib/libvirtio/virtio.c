@@ -105,9 +105,9 @@ static void virtio_irq_unregister(struct virtio_device *dev);
 static int wants_kick(struct virtio_queue *q);
 static void kick_queue(struct virtio_device *dev, int qidx);
 
-vir_bytes get_virtio_queue_address(struct virtio_device *dev, int qidx){
+phys_bytes get_virtio_queue_address(struct virtio_device *dev, int qidx){
 	//printf("Queue vaddr: %lu\n Queue & addr: %lu\n", (vir_bytes) dev->queues[qidx].vaddr, (vir_bytes) &dev->queues[qidx].vring);
-	return (vir_bytes) &dev->queues[qidx].vring;
+	return (vir_bytes) dev->queues[qidx].paddr;
 }
 
 u32_t get_device_ring_size(struct virtio_device *dev, int qidx){

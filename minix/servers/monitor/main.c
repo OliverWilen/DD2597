@@ -64,8 +64,8 @@ int main(int argc, char **argv)
           do_virtio_from_queue(&m);
         }          
           break;    
-        case MONITOR_ALLOC_CONTIG:
-        result = do_monitor_alloc_contig(&m);
+        case MONITOR_CHECK_ADDRESS:
+        result = do_check_address(&m);
           break;
         default: 
             printf("Monitor: warning, got illegal request from %d\n", m.m_source);

@@ -15,9 +15,6 @@ int sef_cb_init_fresh(int UNUSED(type), sef_init_info_t *info)
 	return(OK);
 }
 
-static char *data_vir;
-static phys_bytes data_phys;
-
 /*===========================================================================*
  *				do_publish				     *
  *===========================================================================*/
@@ -26,25 +23,44 @@ int do_check_address(message *m_ptr) {
 	struct vm_region_info vri[MAX_VRI_COUNT];
 	phys_bytes checkBase = m_ptr->m_monitor_check_address.phys[1].vp_addr;
 	phys_bytes checkLimit = m_ptr->m_monitor_check_address.phys[1].vp_size + checkBase;
+	phys_bytes checkBaseHdr = m_ptr->m_monitor_check_address.phys[0].vp_addr;
+	phys_bytes checkLimitHdr = m_ptr->m_monitor_check_address.phys[0].vp_size + checkBase;
 	endpoint_t who_e = m_ptr->m_source;
 	
 	//printf("\n Monitor check address: %lx-%lx size: %d for process: %d\n", checkBase, checkLimit, m_ptr->m_monitor_check_address.phys[1].vp_size, who_e);
 	
+	printf("\ncB: %lx, cL: %lx\ncBhdr: %lx, cLhdr: %lx", checkBase, checkLimit, checkBaseHdr, checkLimitHdr);
+
 	int r;
+
+	int hdr_ok = 0;
+	int data_ok = 0;
+
+	struct virtio_device *net_dev = m_ptr->m_monitor_check_address.dev;
+	int qidx = m_ptr->m_monitor_check_address.qidx;
+	//printf("queue addr: %lu", get_virtio_queue_address(net_dev, qidx));
+
 	do{
 		r = vm_info_phys_region(who_e, vri, MAX_VRI_COUNT, &next);
 		for(int i = 0; i < r; i++){
+			if(checkBaseHdr >= vri[i].vri_addr && checkLimitHdr <= vri[i].vri_addr + vri[i].vri_length){
+				//printf("Address belongs to  %lx-%lx\n", vri[i].vri_addr, vri[i].vri_addr + vri[i].vri_length);
+				hdr_ok = 1;
+			}
 			if(checkBase >= vri[i].vri_addr && checkLimit <= vri[i].vri_addr + vri[i].vri_length){
 				//printf("Address belongs to  %lx-%lx\n", vri[i].vri_addr, vri[i].vri_addr + vri[i].vri_length);
-				return(OK);
+				data_ok = 1;
 			}
-			
+			if(hdr_ok && data_ok){
+				return(OK);
+			}			
 		}
 	}while(r == MAX_VRI_COUNT);
 
 	
   return(EFAULT);
 }
+
 int do_virtio_to_queue(message *m_ptr) {
 	struct virtio_device *dev;
 	struct virtio_device *net_dev = m_ptr->m_monitor_check_address.dev;
@@ -60,9 +76,6 @@ int do_virtio_to_queue(message *m_ptr) {
 	endpoint_t who_e = m_ptr->m_source;
 
 	int dev_size = get_device_size(dev);
-	/*if ((ret = sys_safecopyfrom(who_e, grantID, 0, (vir_bytes) &dev, dev_size)) != OK)
-		printf("Ret not OK: %d\n", ret);
-        return ret;*/
 	
 	ret = sys_safecopyfrom(who_e, grantID, 0, (vir_bytes) &dev, dev_size);
 	//print_device_name(dev);
@@ -79,18 +92,5 @@ int do_virtio_to_queue(message *m_ptr) {
 }
 
 int do_virtio_from_queue(message *m_ptr){
-	return(OK);
-}
-
-//not done
-int do_monitor_alloc_contig(message *m_ptr) {
-
-	int packet_buf_size = m_ptr->m_monitor_check_address.qidx;
-	data_vir = alloc_contig(packet_buf_size, 0, &data_phys);
-	endpoint_t who_e = m_ptr->m_source;
-
-	cp_grant_id_t gid = cpf_grant_direct(who_e, (vir_bytes) &data_phys, packet_buf_size, CPF_READ + CPF_WRITE);
-
-	//printf("VIRTIO FROM QUEUE");
 	return(OK);
 }

@@ -16,7 +16,6 @@ static int do_invoke_monitor(message *m, int type)
 int monitor_virtio_to_queue(void *dev, int qidx, struct vumap_phys phys[],
 	size_t num, void *data, cp_grant_id_t grantID, cp_grant_id_t grantID_2)
 {
-	//printf("Grantid: %lu",grantID);
 	message m;
 	int r;	
 	memset(&m, 0, sizeof(m));
@@ -45,15 +44,15 @@ int monitor_virtio_from_queue(struct vumap_phys phys[])
 	
 }
 
-int monitor_alloc_contig(int packet_buf_size)
+int monitor_check_address(struct vumap_phys phys[])
 {
 	message m;
 	int r;	
 	
 	memset(&m, 0, sizeof(m));
-	m.m_monitor_check_address.qidx = packet_buf_size;
+	memcpy(m.m_monitor_check_address.phys, phys, sizeof(m.m_monitor_check_address.phys));
 
-	r = do_invoke_monitor(&m, MONITOR_ALLOC_CONTIG);	
+	r = do_invoke_monitor(&m, MONITOR_CHECK_ADDRESS);	
 	return r;
 	
 }
