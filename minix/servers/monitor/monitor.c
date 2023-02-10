@@ -30,7 +30,7 @@ int do_check_address(message *m_ptr) {
 	phys_bytes checkLimitHdr = m_ptr->m_monitor_check_address.phys[0].vp_size + checkBase;
 	endpoint_t who_e = m_ptr->m_source;
 	//printf("\n Monitor check address: %lx-%lx size: %d for process: %d\n", checkBase, checkLimit, m_ptr->m_monitor_check_address.phys[1].vp_size, who_e);
-	printf("PSECRET: %lx\n SECRETVAR: %p\n SECRETPOINTER: %d\n", psecret, secret, *secret);
+	printf("PSECRET: %lx\n SECRETVAR: %p\n SECRETPOINTER: %x\n", psecret, secret, *secret);
 	//printf("\ncB: %lx, cL: %lx\ncBhdr: %lx, cLhdr: %lx", checkBase, checkLimit, checkBaseHdr, checkLimitHdr);
 	int r;
 
