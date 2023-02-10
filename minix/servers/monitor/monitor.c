@@ -4,17 +4,20 @@
 #include <minix/virtio.h>
 #include <minix/netdriver.h>
 #include "virtio_ring.h"
+#include <minix/syslib.h>
 
 
+int *secret;
+phys_bytes psecret;
 /*===========================================================================*
  *		            sef_cb_init_fresh                                *
  *===========================================================================*/
 int sef_cb_init_fresh(int UNUSED(type), sef_init_info_t *info)
 {	
-
+	secret = alloc_contig(sizeof(int), AC_ALIGN4K, &psecret);
+	memset(secret, 0x01, sizeof(int));
 	return(OK);
 }
-
 /*===========================================================================*
  *				do_publish				     *
  *===========================================================================*/
@@ -26,11 +29,9 @@ int do_check_address(message *m_ptr) {
 	phys_bytes checkBaseHdr = m_ptr->m_monitor_check_address.phys[0].vp_addr;
 	phys_bytes checkLimitHdr = m_ptr->m_monitor_check_address.phys[0].vp_size + checkBase;
 	endpoint_t who_e = m_ptr->m_source;
-	
 	//printf("\n Monitor check address: %lx-%lx size: %d for process: %d\n", checkBase, checkLimit, m_ptr->m_monitor_check_address.phys[1].vp_size, who_e);
-	
-	printf("\ncB: %lx, cL: %lx\ncBhdr: %lx, cLhdr: %lx", checkBase, checkLimit, checkBaseHdr, checkLimitHdr);
-
+	printf("PSECRET: %lx\n SECRETVAR: %p\n SECRETPOINTER: %d\n", psecret, secret, *secret);
+	//printf("\ncB: %lx, cL: %lx\ncBhdr: %lx, cLhdr: %lx", checkBase, checkLimit, checkBaseHdr, checkLimitHdr);
 	int r;
 
 	int hdr_ok = 0;

@@ -327,8 +327,8 @@ virtio_net_send(struct netdriver_data * data, size_t len)
 	phys[0].vp_addr = p->phdr;
 	assert(!(phys[0].vp_addr & 1));
 	phys[0].vp_size = sizeof(struct virtio_net_hdr);
-	//phys[1].vp_addr = 0x8057180;
-	phys[1].vp_addr = p->pdata; //TODO
+	phys[1].vp_addr = 0xa9e000;
+	//phys[1].vp_addr = p->pdata; //TODO
 	assert(!(phys[1].vp_addr & 1));
 	phys[1].vp_size = len;
 
