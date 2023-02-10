@@ -23,6 +23,7 @@
 #include <minix/virtio.h>			/* virtio system include */
 
 #include "virtio_ring.h"			/* virtio types / helper */
+#include <minix/monitor.h>
 
 /*
  * About indirect descriptors:
@@ -625,10 +626,11 @@ int
 virtio_to_queue(struct virtio_device *dev, int qidx, struct vumap_phys *bufs,
 	size_t num, void *data)
 {
+	//Calls monitor to check the addresses of both the data and packet buffers in the driver
+	printf("Adress response: %d\n", monitor_check_address((bufs)));
 	u16_t free_first;
 	int left;
 	struct virtio_queue *q = &dev->queues[qidx];
-	//SIGSEGV
 	struct vring *vring = &q->vring;
 	
 	assert(0 <= qidx && qidx <= dev->num_queues);	
