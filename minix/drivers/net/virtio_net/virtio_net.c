@@ -327,23 +327,10 @@ virtio_net_send(struct netdriver_data * data, size_t len)
 	phys[0].vp_addr = p->phdr;
 	assert(!(phys[0].vp_addr & 1));
 	phys[0].vp_size = sizeof(struct virtio_net_hdr);
-	//phys[1].vp_addr = 0;
-	phys[1].vp_addr = p->pdata; //TODO
+	//phys[1].vp_addr = 0x8057180;
+	phys[1].vp_addr = p->pdata;
 	assert(!(phys[1].vp_addr & 1));
 	phys[1].vp_size = len;
-
-	//Grant for device pointer that is used by the monitor
-	/*int device_size = get_device_size(net_dev);
-	vir_bytes queue_addr = get_virtio_queue_address(net_dev, TX_Q);
-	u32_t ring_size = get_device_ring_size(net_dev, TX_Q);
-	cp_grant_id_t monitor_grant_id = cpf_grant_direct(MONITOR_PROC_NR, (vir_bytes) &net_dev, device_size, CPF_READ + CPF_WRITE);
-	cp_grant_id_t monitor_grant_id_2 = cpf_grant_direct(MONITOR_PROC_NR, queue_addr, ring_size, CPF_READ + CPF_WRITE);
-
-	//Intercept the drivers call to put packet into queue and verify that the adress is correct.
-	printf("Valid address response: %d\n", monitor_virtio_to_queue(net_dev, TX_Q, phys, 2, p, monitor_grant_id, monitor_grant_id_2));
-	cpf_revoke(monitor_grant_id);*/
-
-	printf("Adress response: %d\n", monitor_check_address((phys)));
 
 	virtio_to_queue(net_dev, TX_Q, phys, 2, p);
 	return OK;

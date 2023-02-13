@@ -2404,11 +2404,7 @@ typedef struct {
 	void *dev; // 4 bytes
 	int qidx;	//4 bytes	
 	struct vumap_phys phys[2]; // 16 bytes
-	size_t num; //4 bytes
-	void *data; //4 bytes
-	cp_grant_id_t grantID; //4 bytes
-	cp_grant_id_t grantID_2; //4 bytes
-	uint8_t padding[16]; //56-40
+	uint8_t padding[32]; //56-24
 	
 } mess_monitor_check_address;
 _ASSERT_MSG_SIZE(mess_monitor_check_address);
