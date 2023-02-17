@@ -243,6 +243,7 @@ virtio_net_refill_rx_queue(void)
 		if (OK != (s=sys_getkinfo(&kinfo))) {
 			panic("Couldn't get kernel information: %d", s);
 		}
+		//printf("%lu",kinfo.mem_high_phys); //268304384 pmemsave addr size file
 		phys[1].vp_addr = kinfo.mem_high_phys -100; //Need -100 since this represents the highest adress of the kernel. 100 is an arbitary number we just need to get into kernel space
 
 		/* RX queue needs write */
