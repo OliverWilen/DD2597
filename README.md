@@ -6,18 +6,22 @@ Project Repository for Group 4
 * Marco Godow
 * Sebastian Veijalainen 
 * Marcus Dypbukt Källman
+
+## How to start monitor:
+Minix should be able to build normally using the releasetools. 
+Before starting minix, virtio needs to be used. We use this command to start minix with virtio enabled.
+`
+qemu-system-i386 --enable-kvm -m 256 -hda minix_x86.img -nic user,id=u1,model=virtio-net-pci
+`
+To activate the monitor, the virtio net driver needs to be used. This is done using netconf.
+In the Minix terminal use the netconf command and pick the vi0 driver. Then either restart Minix or the network service.
+
 # Vulnerabilities
-## Data leak
-A corrupt driver can make the NIC leak data from places it shouldn't. If we for example change the following line in virtio_net_send() from [virtio_net.c](minix/drivers/net/virtio_net/virtio_net.c)
-```c
-phys[1].vp_addr = p->pdata;		--->		phys[1].vp_addr = 0;
-```
-The NIC will then read from address 0 instead and send that data out.
-If run Minix with the changed line and capture the packets using Wireshark, we get the following traffic.
-![leaked traffic](ReadMeImg/dataLeakPackets.png)
-We can see that all packets contain the same data and should be the data at address 0 in memory. To confirm we can take a memory dump of our Minix instance and check if the data matches. Here is the first 100 bytes of the memory dump where we can see the data matches the leaked data.
-![leaked data](ReadMeImg/dataLeakMem.png)
-## Data overwrite
+## Data Leak Attack
+The data leak attack and guide is on the branch sebvei_extend_attack.
+
+## Data Overwrite Attack
+The data leak attack and guide is on the branch marcoTest.
 
 
 
