@@ -7,17 +7,15 @@ Project Repository for Group 4
 * Sebastian Veijalainen 
 * Marcus Dypbukt Källman
 # Vulnerabilities
-## Data leak
-A corrupt driver can make the NIC leak data from places it shouldn't. If we for example change the following line in virtio_net_send() from [virtio_net.c](minix/drivers/net/virtio_net/virtio_net.c)
-```c
-phys[1].vp_addr = p->pdata;		--->		phys[1].vp_addr = 0;
-```
-The NIC will then read from address 0 instead and send that data out.
-If run Minix with the changed line and capture the packets using Wireshark, we get the following traffic.
-![leaked traffic](ReadMeImg/dataLeakPackets.png)
-We can see that all packets contain the same data and should be the data at address 0 in memory. To confirm we can take a memory dump of our Minix instance and check if the data matches. Here is the first 100 bytes of the memory dump where we can see the data matches the leaked data.
-![leaked data](ReadMeImg/dataLeakMem.png)
-## Data overwrite
+## Extended Data leak
+The memory leak attack was extended by allocating an int in the monitor that should not be accessible for the driver - but by finding out the physical address of the int and using it as the address for the physical buffer in virtio_to_queue, it was leaked and visible when dumping traffic from qemu and opening the dump in Wireshark. The following command was used: 
+
+> qemu-system-i386 --enable-kvm -m 256 -hda minix_x86.img -nic user,id=u1,model=virtio-net-pci -object filter-dump,id=f1,netdev=u1,file=/<PATH_TO_DUMPFILE/DUMPFILE.dat>
+
+(The physical address was, so far, found out by printing it and hard coding it in the driver - if trying to reproduce this, check the printed address and that it matches the one in the driver, otherwise something else will be queued for transmission by the driver).
+
+Below is a screenshot showing the printout of the secret variable and a captured packet (both showing a hexadecimal value).
+![scr](https://user-images.githubusercontent.com/94693603/218114740-40647548-f8d3-4502-8857-dccc44bd1854.png)
 
 
 
