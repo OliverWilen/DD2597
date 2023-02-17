@@ -25,7 +25,7 @@ The data leak attack and guide is on the branch sebvei_extend_attack.
 The data Overwrite attack was created by first getting the info of where the kernel space is located, since we wanted to create a kernel panic.
 Later on we then used this adress to tell the virtio_net driver to write to this location instead of the previous location that would have been added to the physical buffer in virtio_to_queue. The result is that you will be able to overwrite any part of memory defined by the adress you choose in the virtio_net driver with the data from the packet.
 Below is a screenshot of the memory located in the kernel adress space before and after the attack.
-![memory] (ReadMeImg/Before_After_Attack.png)
+![memory](ReadMeImg/Before_After_Attack.png)
 
 To get these memory dump files one has to use the monitor mode in qemu, which is accesed by Ctrl + Alt + 2. Afterwards you can take a memorydump with pmemsave addr size file. The "addr" attribute can be found out by uncommenting line 246 in virtio_net.c //printf("%lu",kinfo.mem_high_phys); //268304384
 We then take this addr "-100" an arbitrary number that gets us from highest kernel region into the kernel space. Afterwards we compare this memory before we have done the netconf and network restart described above. 
