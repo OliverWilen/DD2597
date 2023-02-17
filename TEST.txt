@@ -1,0 +1,10 @@
+The full instructions on how to test the project can be found in the README.md file.
+
+Minix should be able to build normally using the releasetools. Before starting minix, virtio needs to be used. We use this command to start minix with virtio enabled. qemu-system-i386 --enable-kvm -m 256 -hda minix_x86.img -nic user,id=u1,model=virtio-net-pci To activate the monitor, the virtio net driver needs to be used. This is done using netconf. In the Minix terminal use the netconf command and pick the vi0 driver. Then either restart Minix or the network service.
+The memory leak attack was extended by allocating an int in the monitor that should not be accessible for the driver - but by finding out the physical address of the int and using it as the address for the physical buffer in virtio_to_queue, it was leaked and visible when dumping traffic from qemu and opening the dump in Wireshark. The following command was used:
+
+qemu-system-i386 --enable-kvm -m 256 -hda minix_x86.img -nic user,id=u1,model=virtio-net-pci -object filter-dump,id=f1,netdev=u1,file=/<PATH_TO_DUMPFILE/DUMPFILE.dat>
+
+(The physical address was, so far, found out by printing it and hard coding it in the driver - if trying to reproduce this, check the printed address and that it matches the one in the driver, otherwise something else will be queued for transmission by the driver).
+
+ 
