@@ -20,37 +20,31 @@ int sef_cb_init_fresh(int UNUSED(type), sef_init_info_t *info)
 int do_check_address(message *m_ptr) {	
 	vir_bytes next = 0;
 	struct vm_region_info vri[MAX_VRI_COUNT];
-	phys_bytes checkBase = m_ptr->m_monitor_check_address.phys[1].vp_addr;
-	phys_bytes checkLimit = m_ptr->m_monitor_check_address.phys[1].vp_size + checkBase;
-	phys_bytes checkBaseHdr = m_ptr->m_monitor_check_address.phys[0].vp_addr;
-	phys_bytes checkLimitHdr = m_ptr->m_monitor_check_address.phys[0].vp_size + checkBase;
-	endpoint_t who_e = m_ptr->m_source;
+	phys_bytes checkBase = m_ptr->m_monitor_check_address.phys[1].vp_addr; //Physical address of start of data buffer
+	phys_bytes checkLimit = m_ptr->m_monitor_check_address.phys[1].vp_size + checkBase; //Physical address of end of data buffer
+	phys_bytes checkBaseHdr = m_ptr->m_monitor_check_address.phys[0].vp_addr; //Physical address of start of header buffer
+	phys_bytes checkLimitHdr = m_ptr->m_monitor_check_address.phys[0].vp_size + checkBaseHdr; //Physical address of end of header buffer
+	endpoint_t who_e = m_ptr->m_source; //Sender/source endpoint number
 	
-	//printf("\n Monitor check address: %lx-%lx size: %d for process: %d\n", checkBase, checkLimit, m_ptr->m_monitor_check_address.phys[1].vp_size, who_e);
-	
-	printf("\ncB: %lx, cL: %lx\ncBhdr: %lx, cLhdr: %lx", checkBase, checkLimit, checkBaseHdr, checkLimitHdr);
 
 	int r;
 
 	int hdr_ok = 0;
 	int data_ok = 0;
 
-	struct virtio_device *net_dev = m_ptr->m_monitor_check_address.dev;
-	int qidx = m_ptr->m_monitor_check_address.qidx;
-	//printf("queue addr: %lu", get_virtio_queue_address(net_dev, qidx));
-
 	do{
 		r = vm_info_phys_region(who_e, vri, MAX_VRI_COUNT, &next);
 		for(int i = 0; i < r; i++){
 			if(checkBaseHdr >= vri[i].vri_addr && checkLimitHdr <= vri[i].vri_addr + vri[i].vri_length){
-				//printf("Address belongs to  %lx-%lx\n", vri[i].vri_addr, vri[i].vri_addr + vri[i].vri_length);
+				//Address of header is within the right memory space
 				hdr_ok = 1;
 			}
 			if(checkBase >= vri[i].vri_addr && checkLimit <= vri[i].vri_addr + vri[i].vri_length){
-				//printf("Address belongs to  %lx-%lx\n", vri[i].vri_addr, vri[i].vri_addr + vri[i].vri_length);
+				//Address of data buffer is within the right memory space
 				data_ok = 1;
 			}
 			if(hdr_ok && data_ok){
+				//both conditions are ok
 				return(OK);
 			}			
 		}
