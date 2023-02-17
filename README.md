@@ -21,7 +21,7 @@ In the Minix terminal use the netconf command and pick the vi0 driver. Then eith
 The data leak attack and guide is on the branch sebvei_extend_attack.
 
 ## Data Overwrite Attack
-The data leak attack and guide is on the branch marcoTest.
+The data leak attack and guide is on the branch overwrite_kernel_attack.
 
 
 
